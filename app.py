@@ -1,7 +1,7 @@
-tasks = []  # Lista para almacenar las tareas, cada tarea será un diccionario con "nombre" y "estado"
+tasks = []  # Lista de tareas, cada tarea es un diccionario con "name" y "completed"
 
 def add_task(task):
-    tasks.append({"name": task, "completed": False})  # Se añade la tarea con estado "Pendiente"
+    tasks.append({"name": task, "completed": False})
     print(f"Tarea '{task}' añadida.")
 
 def list_tasks():
@@ -22,8 +22,16 @@ def remove_task(task_number):
 
 def complete_task(task_number):
     if 1 <= task_number <= len(tasks):
-        tasks[task_number - 1]["completed"] = True  # Marcar como completada
+        tasks[task_number - 1]["completed"] = True
         print(f"Tarea '{tasks[task_number - 1]['name']}' marcada como completada.")
+    else:
+        print("Número de tarea inválido.")
+
+def edit_task(task_number, new_name):
+    if 1 <= task_number <= len(tasks):
+        old_name = tasks[task_number - 1]["name"]
+        tasks[task_number - 1]["name"] = new_name
+        print(f"Tarea '{old_name}' cambiada a '{new_name}'.")
     else:
         print("Número de tarea inválido.")
 
@@ -33,7 +41,8 @@ while True:
     print("2. Ver tareas")
     print("3. Eliminar tarea")
     print("4. Marcar tarea como completada")
-    print("5. Salir")
+    print("5. Editar tarea")
+    print("6. Salir")
 
     option = input("Elige una opción: ")
 
@@ -51,6 +60,12 @@ while True:
         task_number = int(input("Número de la tarea a completar: "))
         complete_task(task_number)
     elif option == "5":
+        list_tasks()
+        task_number = int(input("Número de la tarea a editar: "))
+        new_name = input("Nuevo nombre para la tarea: ")
+        edit_task(task_number, new_name)
+    elif option == "6":
+        print("Saliendo...")
         break
     else:
         print("Opción no válida.")
