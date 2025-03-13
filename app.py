@@ -1,71 +1,24 @@
-tasks = []  # Lista de tareas, cada tarea es un diccionario con "name" y "completed"
+tasks = []  # Lista de tareas (diccionarios con "name" y "completed")
 
 def add_task(task):
+    """Añade una tarea a la lista."""
     tasks.append({"name": task, "completed": False})
-    print(f"Tarea '{task}' añadida.")
 
 def list_tasks():
-    if not tasks:
-        print("No hay tareas pendientes.")
-    else:
-        print("\nLista de tareas:")
-        for i, task in enumerate(tasks, 1):
-            status = "✔️ Completada" if task["completed"] else "❌ Pendiente"
-            print(f"{i}. {task['name']} - {status}")
+    """Devuelve la lista de tareas con su estado."""
+    return tasks
 
-def remove_task(task_number):
-    if 1 <= task_number <= len(tasks):
-        removed_task = tasks.pop(task_number - 1)
-        print(f"Tarea '{removed_task['name']}' eliminada.")
-    else:
-        print("Número de tarea inválido.")
+def remove_task(task_index):
+    """Elimina una tarea por su índice."""
+    if 0 <= task_index < len(tasks):
+        tasks.pop(task_index)
 
-def complete_task(task_number):
-    if 1 <= task_number <= len(tasks):
-        tasks[task_number - 1]["completed"] = True
-        print(f"Tarea '{tasks[task_number - 1]['name']}' marcada como completada.")
-    else:
-        print("Número de tarea inválido.")
+def complete_task(task_index):
+    """Marca una tarea como completada."""
+    if 0 <= task_index < len(tasks):
+        tasks[task_index]["completed"] = True
 
-def edit_task(task_number, new_name):
-    if 1 <= task_number <= len(tasks):
-        old_name = tasks[task_number - 1]["name"]
-        tasks[task_number - 1]["name"] = new_name
-        print(f"Tarea '{old_name}' cambiada a '{new_name}'.")
-    else:
-        print("Número de tarea inválido.")
-
-while True:
-    print("\nOpciones:")
-    print("1. Añadir tarea")
-    print("2. Ver tareas")
-    print("3. Eliminar tarea")
-    print("4. Marcar tarea como completada")
-    print("5. Editar tarea")
-    print("6. Salir")
-
-    option = input("Elige una opción: ")
-
-    if option == "1":
-        task = input("Escribe la tarea: ")
-        add_task(task)
-    elif option == "2":
-        list_tasks()
-    elif option == "3":
-        list_tasks()
-        task_number = int(input("Número de la tarea a eliminar: "))
-        remove_task(task_number)
-    elif option == "4":
-        list_tasks()
-        task_number = int(input("Número de la tarea a completar: "))
-        complete_task(task_number)
-    elif option == "5":
-        list_tasks()
-        task_number = int(input("Número de la tarea a editar: "))
-        new_name = input("Nuevo nombre para la tarea: ")
-        edit_task(task_number, new_name)
-    elif option == "6":
-        print("Saliendo...")
-        break
-    else:
-        print("Opción no válida.")
+def edit_task(task_index, new_name):
+    """Edita el nombre de una tarea."""
+    if 0 <= task_index < len(tasks):
+        tasks[task_index]["name"] = new_name
