@@ -53,27 +53,37 @@ def edit_task():
 
 # Crear la ventana principal
 root = tk.Tk()
-root.title("Lista de Tareas")
+root.title("Gestor de Tareas")
+root.geometry("400x400")
+root.configure(bg="#f0f0f0")
+
+# Título de la aplicación
+title_label = tk.Label(root, text="Gestor de Tareas", font=("Helvetica", 16, "bold"), bg="#f0f0f0")
+title_label.pack(pady=10)
 
 # Entrada de texto para nueva tarea
-entry = tk.Entry(root, width=40)
-entry.pack(pady=5)
+entry = tk.Entry(root, width=40, font=("Helvetica", 12))
+entry.pack(pady=10)
 
-# Botones
-btn_add = tk.Button(root, text="Añadir", command=add_task)
-btn_add.pack()
+# Frame para los botones
+button_frame = tk.Frame(root, bg="#f0f0f0")
+button_frame.pack(pady=10)
 
-btn_complete = tk.Button(root, text="Completar", command=complete_task)
-btn_complete.pack()
+# Botones con estilos
+btn_add = tk.Button(button_frame, text="Añadir", command=add_task, bg="#4CAF50", fg="white", font=("Helvetica", 10, "bold"))
+btn_add.grid(row=0, column=0, padx=5)
 
-btn_edit = tk.Button(root, text="Editar", command=edit_task)
-btn_edit.pack()
+btn_complete = tk.Button(button_frame, text="Completar", command=complete_task, bg="#2196F3", fg="white", font=("Helvetica", 10, "bold"))
+btn_complete.grid(row=0, column=1, padx=5)
 
-btn_remove = tk.Button(root, text="Eliminar", command=remove_task)
-btn_remove.pack()
+btn_edit = tk.Button(button_frame, text="Editar", command=edit_task, bg="#FF9800", fg="white", font=("Helvetica", 10, "bold"))
+btn_edit.grid(row=0, column=2, padx=5)
+
+btn_remove = tk.Button(button_frame, text="Eliminar", command=remove_task, bg="#F44336", fg="white", font=("Helvetica", 10, "bold"))
+btn_remove.grid(row=0, column=3, padx=5)
 
 # Lista de tareas
-listbox = tk.Listbox(root, width=50, height=10)
+listbox = tk.Listbox(root, width=50, height=10, font=("Helvetica", 12))
 listbox.pack(pady=10)
 
 # Cargar tareas iniciales
