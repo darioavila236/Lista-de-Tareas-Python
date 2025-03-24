@@ -13,7 +13,7 @@ def update_listbox():
 def add_task():
     task_name = entry.get()
     if task_name:
-        app.add_task(app.list_tasks(), task_name)  # Usamos la lista de `app`
+        app.add_task(task_name)  # Usamos la función actualizada de app.py
         entry.delete(0, tk.END)
         update_listbox()
     else:
@@ -23,7 +23,7 @@ def add_task():
 def remove_task():
     try:
         selected = listbox.curselection()[0]  # Obtiene la selección
-        app.remove_task(selected)  # `remove_task` ya maneja la lista interna
+        app.remove_task(selected)  # Usamos la función actualizada de app.py
         update_listbox()
     except IndexError:
         messagebox.showwarning("Error", "Selecciona una tarea para eliminar.")
@@ -32,7 +32,7 @@ def remove_task():
 def complete_task():
     try:
         selected = listbox.curselection()[0]
-        app.complete_task(app.list_tasks(), selected)  # Pasamos la lista de `app`
+        app.complete_task(selected)  # Usamos la función actualizada de app.py
         update_listbox()
     except IndexError:
         messagebox.showwarning("Error", "Selecciona una tarea para completar.")
@@ -43,7 +43,7 @@ def edit_task():
         selected = listbox.curselection()[0]
         new_name = entry.get()
         if new_name:
-            app.edit_task(selected, new_name)  # `edit_task` ya usa la lista de `app`
+            app.edit_task(selected, new_name)  # Usamos la función actualizada de app.py
             entry.delete(0, tk.END)
             update_listbox()
         else:
