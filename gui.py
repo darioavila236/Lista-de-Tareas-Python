@@ -133,37 +133,16 @@ def update_listbox():
 def add_task():
     task_name = entry.get()
     if task_name:
-<<<<<<< HEAD
-        app.add_task(task_name)  # Usamos la función actualizada de app.py
-        entry.delete(0, tk.END)
-        update_listbox()
-    else:
-        messagebox.showwarning("Error", "La tarea no puede estar vacía.")
-
-# Función para eliminar tarea
-def remove_task():
-    try:
-        selected = listbox.curselection()[0]  # Obtiene la selección
-        app.remove_task(selected)  # Usamos la función actualizada de app.py
-        update_listbox()
-    except IndexError:
-        messagebox.showwarning("Error", "Selecciona una tarea para eliminar.")
-=======
         app.add_task(app.tasks, task_name)
         entry.delete(0, tk.END)
         update_listbox()
     else:
         messagebox.showwarning("Error", "La tarea no puede estar vacía", parent=root)
->>>>>>> gui
 
 def complete_task():
     try:
         selected = listbox.curselection()[0]
-<<<<<<< HEAD
-        app.complete_task(selected)  # Usamos la función actualizada de app.py
-=======
         app.complete_task(app.tasks, selected)
->>>>>>> gui
         update_listbox()
     except IndexError:
         messagebox.showwarning("Error", "Selecciona una tarea para completar", parent=root)
@@ -173,11 +152,7 @@ def edit_task():
         selected = listbox.curselection()[0]
         new_name = entry.get()
         if new_name:
-<<<<<<< HEAD
-            app.edit_task(selected, new_name)  # Usamos la función actualizada de app.py
-=======
             app.edit_task(selected, new_name)
->>>>>>> gui
             entry.delete(0, tk.END)
             update_listbox()
         else:
