@@ -1,93 +1,180 @@
 import tkinter as tk
 from tkinter import messagebox
-import app  # Importamos la lógica desde app.py
+from ttkbootstrap import Style
+import app
 
-# Función para actualizar la lista de tareas en la interfaz
+# Configuración inicial
+style = Style(theme='flatly')
+root = style.master
+root.title("Gestor de Tareas Avanzado")
+root.geometry("650x550")
+
+# Variables de estilo
+COLOR_PRIMARY = '#2c3e50'
+COLOR_SECONDARY = '#ecf0f1'
+FONT_TITLE = ('Helvetica', 18, 'bold')
+FONT_BODY = ('Helvetica', 12)
+
+# Marco principal
+main_frame = tk.Frame(root, padx=20, pady=20, bg=COLOR_SECONDARY)
+main_frame.pack(expand=True, fill=tk.BOTH)
+
+# Título
+tk.Label(
+    main_frame,
+    text="Gestor de Tareas",
+    font=FONT_TITLE,
+    bg=COLOR_SECONDARY,
+    fg=COLOR_PRIMARY
+).pack(pady=(0, 20))
+
+# Marco de entrada
+input_frame = tk.Frame(main_frame, bg=COLOR_SECONDARY)
+input_frame.pack(fill=tk.X, pady=10)
+
+entry = tk.Entry(
+    input_frame,
+    font=FONT_BODY,
+    relief=tk.FLAT,
+    highlightthickness=1,
+    highlightbackground='#bdc3c7',
+    highlightcolor='#3498db'
+)
+entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 10))
+
+# Botones de acción
+buttons_frame = tk.Frame(main_frame, bg=COLOR_SECONDARY)
+buttons_frame.pack(fill=tk.X, pady=10)
+
+button_style = {
+    'font': ('Helvetica', 10, 'bold'),
+    'borderwidth': 0,
+    'relief': tk.FLAT,
+    'padx': 10,
+    'pady': 5
+}
+
+tk.Button(
+    buttons_frame,
+    text="➕ Añadir",
+    command=lambda: add_task(),
+    bg='#2ecc71',
+    fg='white',
+    **button_style
+).pack(side=tk.LEFT, padx=5)
+
+tk.Button(
+    buttons_frame,
+    text="✓ Completar",
+    command=lambda: complete_task(),
+    bg='#3498db',
+    fg='white',
+    **button_style
+).pack(side=tk.LEFT, padx=5)
+
+tk.Button(
+    buttons_frame,
+    text="✏ Editar",
+    command=lambda: edit_task(),
+    bg='#f39c12',
+    fg='white',
+    **button_style
+).pack(side=tk.LEFT, padx=5)
+
+tk.Button(
+    buttons_frame,
+    text="🗑 Eliminar",
+    command=lambda: remove_task(),
+    bg='#e74c3c',
+    fg='white',
+    **button_style
+).pack(side=tk.LEFT, padx=5)
+
+# Lista de tareas
+list_frame = tk.Frame(main_frame, bg=COLOR_SECONDARY)
+list_frame.pack(expand=True, fill=tk.BOTH)
+
+scrollbar = tk.Scrollbar(list_frame)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+listbox = tk.Listbox(
+    list_frame,
+    font=FONT_BODY,
+    yscrollcommand=scrollbar.set,
+    selectbackground='#3498db',
+    selectforeground='white',
+    activestyle='none',
+    borderwidth=0,
+    highlightthickness=0,
+    bg='white'
+)
+listbox.pack(expand=True, fill=tk.BOTH)
+
+scrollbar.config(command=listbox.yview)
+
+# Pie de página
+tk.Label(
+    main_frame,
+    text="© 2023 Gestor de Tareas | Python + ttkbootstrap",
+    font=('Helvetica', 8),
+    bg=COLOR_SECONDARY,
+    fg='#7f8c8d'
+).pack(pady=(20, 0))
+
+# Funciones actualizadas
 def update_listbox():
-    listbox.delete(0, tk.END)  # Borra la lista actual
+    listbox.delete(0, tk.END)
     for i, task in enumerate(app.list_tasks()):
-        status = "✔️" if task["completada"] else "❌"
-        listbox.insert(tk.END, f"{i+1}. {task['nombre']} {status}")
+        status = "✓" if task["completada"] else "✗"
+        color = "#2ecc71" if task["completada"] else "#e74c3c"
+        listbox.insert(tk.END, f"  {i+1}. {task['nombre']}")
+        listbox.itemconfig(i, {'fg': color})
 
-# Función para añadir tarea
 def add_task():
     task_name = entry.get()
     if task_name:
-        app.add_task(app.list_tasks(), task_name)  # Usamos la lista de `app`
+        app.add_task(app.tasks, task_name)
         entry.delete(0, tk.END)
         update_listbox()
     else:
-        messagebox.showwarning("Error", "La tarea no puede estar vacía.")
+        messagebox.showwarning("Error", "La tarea no puede estar vacía", parent=root)
 
-# Función para eliminar tarea
-def remove_task():
-    try:
-        selected = listbox.curselection()[0]  # Obtiene la selección
-        app.remove_task(selected)  # `remove_task` ya maneja la lista interna
-        update_listbox()
-    except IndexError:
-        messagebox.showwarning("Error", "Selecciona una tarea para eliminar.")
-
-# Función para completar tarea
 def complete_task():
     try:
         selected = listbox.curselection()[0]
-        app.complete_task(app.list_tasks(), selected)  # Pasamos la lista de `app`
+        app.complete_task(app.tasks, selected)
         update_listbox()
     except IndexError:
-        messagebox.showwarning("Error", "Selecciona una tarea para completar.")
+        messagebox.showwarning("Error", "Selecciona una tarea para completar", parent=root)
 
-# Función para editar tarea
 def edit_task():
     try:
         selected = listbox.curselection()[0]
         new_name = entry.get()
         if new_name:
-            app.edit_task(selected, new_name)  # `edit_task` ya usa la lista de `app`
+            app.edit_task(selected, new_name)
             entry.delete(0, tk.END)
             update_listbox()
         else:
-            messagebox.showwarning("Error", "El nuevo nombre no puede estar vacío.")
+            messagebox.showwarning("Error", "El nuevo nombre no puede estar vacío", parent=root)
     except IndexError:
-        messagebox.showwarning("Error", "Selecciona una tarea para editar.")
+        messagebox.showwarning("Error", "Selecciona una tarea para editar", parent=root)
 
-# Crear la ventana principal
-root = tk.Tk()
-root.title("Gestor de Tareas")
-root.geometry("400x400")
-root.configure(bg="#f0f0f0")
+def remove_task():
+    try:
+        selected = listbox.curselection()[0]
+        app.remove_task(selected)
+        update_listbox()
+    except IndexError:
+        messagebox.showwarning("Error", "Selecciona una tarea para eliminar", parent=root)
 
-# Título de la aplicación
-title_label = tk.Label(root, text="Gestor de Tareas", font=("Helvetica", 16, "bold"), bg="#f0f0f0")
-title_label.pack(pady=10)
+# Eventos
+entry.bind('<Return>', lambda e: add_task())
+listbox.bind('<Double-Button-1>', lambda e: edit_task())
 
-# Entrada de texto para nueva tarea
-entry = tk.Entry(root, width=40, font=("Helvetica", 12))
-entry.pack(pady=10)
-
-# Frame para los botones
-button_frame = tk.Frame(root, bg="#f0f0f0")
-button_frame.pack(pady=10)
-
-# Botones con estilos
-btn_add = tk.Button(button_frame, text="Añadir", command=add_task, bg="#4CAF50", fg="white", font=("Helvetica", 10, "bold"))
-btn_add.grid(row=0, column=0, padx=5)
-
-btn_complete = tk.Button(button_frame, text="Completar", command=complete_task, bg="#2196F3", fg="white", font=("Helvetica", 10, "bold"))
-btn_complete.grid(row=0, column=1, padx=5)
-
-btn_edit = tk.Button(button_frame, text="Editar", command=edit_task, bg="#FF9800", fg="white", font=("Helvetica", 10, "bold"))
-btn_edit.grid(row=0, column=2, padx=5)
-
-btn_remove = tk.Button(button_frame, text="Eliminar", command=remove_task, bg="#F44336", fg="white", font=("Helvetica", 10, "bold"))
-btn_remove.grid(row=0, column=3, padx=5)
-
-# Lista de tareas
-listbox = tk.Listbox(root, width=50, height=10, font=("Helvetica", 12))
-listbox.pack(pady=10)
-
-# Cargar tareas iniciales
+# Carga inicial
 update_listbox()
+entry.focus()
 
-# Ejecutar la aplicación
+# Iniciar aplicación
 root.mainloop()
