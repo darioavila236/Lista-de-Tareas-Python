@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Tareas Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Gestor de Tareas</h1>
+    <div>
+        <input type="text" id="nuevaTarea" placeholder="Nueva tarea">
+        <button onclick="agregarTarea()">Añadir</button>
+    </div>
+    <ul id="listaTareas"></ul>
+
+    <script>
+        async function cargarTareas() {
+            const res = await fetch('/tasks');
+            const tareas = await res.json();
+            const lista = document.getElementById('listaTareas');
+            lista.innerHTML = '';
+            tareas.forEach((tarea, i) => {
+                const item = document.createElement('li');
+                const nombre = document.createElement('span');
+                nombre.textContent = tarea.nombre;
+                if (tarea.completada) nombre.classList.add('completed');
+
+                const acciones = document.createElement('div');
+                acciones.className = 'action-buttons';
+
+                const btnCompletar = document.createElement('button');
+                btnCompletar.textContent = "✓";
+                btnCompletar.onclick = () => completarTarea(i);
+
+                const btnEliminar = document.createElement('button');
+                btnEliminar.textContent = "🗑";
+                btnEliminar.onclick = () => eliminarTarea(i);
+
+                acciones.appendChild(btnCompletar);
+                acciones.appendChild(btnEliminar);
+
+                item.appendChild(nombre);
+                item.appendChild(acciones);
+                lista.appendChild(item);
+            });
+        }
+
+        async function agregarTarea() {
+            const nombre = document.getElementById('nuevaTarea').value;
+            if (!nombre.trim()) return;
+            await fetch('/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre })
+            });
+            document.getElementById('nuevaTarea').value = '';
+            cargarTareas();
+        }
+
+        async function eliminarTarea(i) {
+            await fetch(`/tasks/${i}`, { method: 'DELETE' });
+            cargarTareas();
+        }
+
+        async function completarTarea(i) {
+            await fetch(`/tasks/${i}/complete`, { method: 'PATCH' });
+            cargarTareas();
+        }
+
+        cargarTareas();
+    </script>
+</body>
+</html>
