@@ -1,14 +1,1 @@
-[
-    {
-        "nombre": "Echar lavadora",
-        "completada": true
-    },
-    {
-        "nombre": "Ir al box",
-        "completada": false
-    },
-    {
-        "nombre": "Meditar",
-        "completada": false
-    }
-]
+[]

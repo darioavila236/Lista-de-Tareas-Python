@@ -133,7 +133,7 @@ def update_listbox():
 def add_task():
     task_name = entry.get()
     if task_name:
-        app.add_task(app.tasks, task_name)
+        app.add_task(task_name)
         entry.delete(0, tk.END)
         update_listbox()
     else:
@@ -142,7 +142,7 @@ def add_task():
 def complete_task():
     try:
         selected = listbox.curselection()[0]
-        app.complete_task(app.tasks, selected)
+        app.complete_task(selected)
         update_listbox()
     except IndexError:
         messagebox.showwarning("Error", "Selecciona una tarea para completar", parent=root)
